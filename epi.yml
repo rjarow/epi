@@ -1,0 +1,186 @@
+---
+# ElementaryOS post install using ansible - FOR LOKI ONLY CURRENTLY!
+- hosts: all
+  become: yes
+  connection: local
+  gather_facts: no
+
+  pre_tasks:
+    - name: Check if Ansible is installed, and if not, install it.
+      raw: test -e /usr/bin/ansible || (apt install -y ansible)
+
+    - setup: # Gather Facts  
+
+  tasks:
+  - name: Run apt update / upgrade (This will take a bit on a fresh install)
+    apt:
+      upgrade: dist
+      update_cache: yes
+    ignore_errors: yes
+
+  - name: Install essentials
+    apt:
+      name: "{{ item }}"
+      state: present
+      cache_valid_time: 300
+    with_items:
+      # essentials
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - wget
+      - git
+      - software-properties-common
+      - software-properties-gtk
+      - ubuntu-restricted-extras
+      - build-essential  
+
+  - name: Install 3rd party repo's (PPA's)
+    apt_repository:
+      repo: "{{ item }}"
+    with_items:
+      # TeeJee's apps - http://www.teejeetech.in
+      - ppa:teejee2008/ppa  
+      # Telegram messager - http://telegram.org
+      - ppa:atareao/telegram
+      # Variety Wallpaper - http://peterlevi.com/variety/
+      - ppa:peterlevi/ppa
+      # Albert Launcher - https://albertlauncher.github.io/docs/installing/
+      - ppa:nilarimogard/webupd8
+      # Lollypop Music Player - https://gnumdk.github.io/lollypop-web/
+      - ppa:gnumdk/lollypop
+      # Atom Editor - https://atom.io/
+      - ppa:webupd8team/atom
+      # Y-PPA Manager - 
+      - ppa:webupd8team/y-ppa-manager
+      # Tilix - https://gnunn1.github.io/tilix-web
+      - ppa:webupd8team/terminix
+      # Moka Icons - https://snwh.org/moka
+      - ppa:moka/daily
+      # Elementary Plus Icons - https://github.com/mank319/elementaryPlus
+      - ppa:cybre/elementaryplus
+      # Elementary Tweaks
+      - ppa:philip.scott/elementary-tweaks
+      # Adapta theme
+      - ppa:tista/adapta
+      # FireJail
+      - ppa:deki/firejail
+      # LXD
+      - ppa:ubuntu-lxc/lxd-stable
+
+  - name: Install 3rd party repo's (raw)
+    apt_repository:
+      repo: "{{ item }}"
+    with_items:
+      # Keeweb
+      - deb https://tagplus5.github.io/keeweb-ppa/ubuntu ./
+      # Virtualbox
+      - deb http://download.virtualbox.org/virtualbox/debian xenial contrib
+      # Docker
+      - deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable
+      # VScode
+      - deb https://tagplus5.github.io/vscode-ppa/ubuntu ./
+      # Opera
+      - deb http://deb.opera.com/opera-stable/ stable non-free
+      # Spotify
+      - deb http://repository.spotify.com stable non-free
+
+  - name: Install 3rd Party Repo's (key)    
+    apt_key:
+      url: "{{ item }}"
+    with_items:
+      # Keeweb
+      - https://tagplus5.github.io/keeweb-ppa/ubuntu/gpg.key
+      # VirtualBox
+      - https://www.virtualbox.org/download/oracle_vbox_2016.asc
+      # Docker
+      - https://download.docker.com/linux/ubuntu/gpg
+      # VSCode
+      - https://tagplus5.github.io/vscode-ppa/ubuntu/gpg.key
+      # Opera
+      - http://deb.opera.com/archive.key 
+
+  - name: Install 3rd Party Repo's (keyserver based)    
+    apt_key:
+      keyserver: "{{ item.ks }}"
+      id: "{{ item.id }}"
+    with_items:
+      # Spotify
+      - { ks: "keyserver.ubuntu.com", id: "BBEBDCB318AD50EC6865090613B00F1FD2C19886" }
+
+  - name: Install Apps!!! (this may take a bit...)
+    apt:
+      name: "{{ item }}"
+      state: present
+      update_cache: yes
+    ignore_errors: yes
+    with_items:
+      # preferred apps
+      - gdebi
+      - byobu
+      - borgbackup
+      - zsh
+      - dconf-editor
+      - openssh-server
+      - htop
+      - redshift
+      - redshift-gtk
+      - filezilla
+      - banshee
+      - gedit
+      - pinta
+      - inkscape
+      - shutter
+      - vlc
+      - geany
+      - tilda
+      # extraction tools
+      - rar
+      - unrar
+      - cabextract
+      - lzip
+      - lunzip
+      - arj
+      - unace
+      - p7zip
+      - p7zip-rar
+      # browsers
+      - firefox
+      - chromium-browser
+      # office / mail stuff
+      - thunderbird
+      - libreoffice
+      # firewall
+      - ufw
+      - gufw
+      # aesthetics
+      - breeze-cursor-theme
+      # external (from ppa's)
+      - keeweb-desktop
+      - adapta-gtk-theme
+      - ukuu
+      - aptik
+      - timeshift
+      - telegram
+      - variety
+      - variety-slideshow
+      - albert
+      - lollypop
+      - atom
+      - code
+      - y-ppa-manager
+      - spotify-client
+      - tilix
+      - moka-icon-theme 
+      - faba-icon-theme
+      - faba-mono-icons
+      - elementaryplus
+      - lxd
+      - docker
+      - virtualbox-5.1
+      - opera-stable
+#      - adobe-flashplugin # your call on this one
+#      - firejail  # Not including by default since it will cause issues if not configured properly.
+
+### Future apps
+# add youtube-dl
