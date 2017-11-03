@@ -9,7 +9,7 @@
     - name: Check if Ansible is installed, and if not, install it.
       raw: test -e /usr/bin/ansible || (apt install -y ansible)
 
-    - setup: # Gather Facts  
+    - setup: # Gather Facts
 
   tasks:
   - name: Run apt update / upgrade (This will take a bit on a fresh install)
@@ -33,14 +33,14 @@
       - software-properties-common
       - software-properties-gtk
       - ubuntu-restricted-extras
-      - build-essential  
+      - build-essential
 
   - name: Install 3rd party repo's (PPA's)
     apt_repository:
       repo: "{{ item }}"
     with_items:
       # TeeJee's apps - http://www.teejeetech.in
-      - ppa:teejee2008/ppa  
+      - ppa:teejee2008/ppa
       # Telegram messager - http://telegram.org
       - ppa:atareao/telegram
       # Variety Wallpaper - http://peterlevi.com/variety/
@@ -51,7 +51,7 @@
       - ppa:gnumdk/lollypop
       # Atom Editor - https://atom.io/
       - ppa:webupd8team/atom
-      # Y-PPA Manager - 
+      # Y-PPA Manager -
       - ppa:webupd8team/y-ppa-manager
       # Tilix - https://gnunn1.github.io/tilix-web
       - ppa:webupd8team/terminix
@@ -85,7 +85,7 @@
       # Spotify
       - deb http://repository.spotify.com stable non-free
 
-  - name: Install 3rd Party Repo's (key)    
+  - name: Install 3rd Party Repo's (key)
     apt_key:
       url: "{{ item }}"
     with_items:
@@ -98,9 +98,9 @@
       # VSCode
       - https://tagplus5.github.io/vscode-ppa/ubuntu/gpg.key
       # Opera
-      - http://deb.opera.com/archive.key 
+      - http://deb.opera.com/archive.key
 
-  - name: Install 3rd Party Repo's (keyserver based)    
+  - name: Install 3rd Party Repo's (keyserver based)
     apt_key:
       keyserver: "{{ item.ks }}"
       id: "{{ item.id }}"
@@ -171,7 +171,7 @@
       - y-ppa-manager
       - spotify-client
       - tilix
-      - moka-icon-theme 
+      - moka-icon-theme
       - faba-icon-theme
       - faba-mono-icons
       - elementaryplus
