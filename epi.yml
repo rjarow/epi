@@ -67,6 +67,8 @@
       - ppa:deki/firejail
       # LXD
       - ppa:ubuntu-lxc/lxd-stable
+      # ulauncher
+      - ppa:agornostal/ulauncher
 
   - name: Install 3rd party repo's (raw)
     apt_repository:
@@ -179,6 +181,7 @@
       - docker
       - virtualbox-5.1
       - opera-stable
+      - ulauncher
 #      - adobe-flashplugin # your call on this one
 #      - firejail  # Not including by default since it will cause issues if not configured properly.
 
